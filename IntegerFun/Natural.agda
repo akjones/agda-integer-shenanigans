@@ -1,4 +1,5 @@
 module IntegerFun.Natural where
+
   open import Data.Nat public
   open import Data.Nat.Show public
 

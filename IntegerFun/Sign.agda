@@ -6,7 +6,7 @@ module IntegerFun.Sign where
     positive : Sign
     negative : Sign
 
-  renderSign : Sign → String
-  renderSign positive = ""
-  renderSign negative = "-"
+  show : Sign → String
+  show positive = ""
+  show negative = "-"
 
