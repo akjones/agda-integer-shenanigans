@@ -13,10 +13,8 @@ module IntegerFun where
   ∣ + n ∣ = n
   ∣ -[1+ n ] ∣ = ℕ.suc n
 
-  -_ : ℤ → ℤ
-  - (+ ℕ.suc n) = -[1+ n ]
-  - (+ ℕ.zero) = + (ℕ.zero)
-  - -[1+ n ] = + (ℕ.suc n)
+  -_ : ℕ → ℤ
+  - n = -[1+ n ℕminus 1 ]
 
   _minus_ : ℕ → ℕ → ℤ
   m minus ℕ.zero = + m
