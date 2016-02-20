@@ -14,6 +14,7 @@ module IntegerFun where
   ∣ -[1+ n ] ∣ = ℕ.suc n
 
   -_ : ℕ → ℤ
+  - ℕ.zero = + ℕ.zero
   - n = -[1+ n ℕminus 1 ]
 
   _minus_ : ℕ → ℕ → ℤ
