@@ -109,6 +109,7 @@ module Main where
 
   main : IO Unit
   main =
-    getLine >>= (λ s →
-      return (ℤ.show(calculate(parseNumbers s))) >>= (λ s' →
-        putStrLn (toCostring s')))
+    putStrLn (toCostring "Enter the integers you'd like to add (separated by a space):") >>= (λ _ →
+      getLine >>= (λ s →
+        return (ℤ.show(calculate(parseNumbers s))) >>= (λ s' →
+          putStrLn (toCostring s'))))
