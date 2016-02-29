@@ -5,7 +5,6 @@ module Main where
 
   open import Data.Bool
   open import Data.Char
-  open import Data.List
   open import Data.Maybe
   open import Data.Nat
   open import Data.Nat.Show
@@ -13,8 +12,8 @@ module Main where
   open import Foreign.Haskell using (Unit)
   open import IO.Primitive
   open import Data.Bool.Base using (not)
-  open import Data.Product
-  open import Function
+
+  open import IntegerFun.List as List
 
   open import IntegerFun as ℤ
     using (ℤ) renaming (_plus_ to _ℤplus_)
@@ -33,7 +32,7 @@ module Main where
       just (digitsToℕ s'))
     where
       parseDigits : List Char → List (Maybe ℕ)
-      parseDigits s = Data.List.map toDigit s
+      parseDigits s = List.map toDigit s
         where
           toDigit : Char → Maybe ℕ
           toDigit '0' = just 0
@@ -52,7 +51,7 @@ module Main where
       unwrap xs = unwrap' (just []) xs
         where
           unwrap' : Maybe (List ℕ) → List (Maybe ℕ) → Maybe (List ℕ)
-          unwrap' (just xs) (just y ∷ ys) = unwrap' (just (Data.List._++_ xs Data.List.[ y ])) ys
+          unwrap' (just xs) (just y ∷ ys) = unwrap' (just (List._++_ xs List.[ y ])) ys
           unwrap' (just xs) (nothing ∷ _) = nothing
           unwrap' (just xs) [] = just xs
           unwrap' nothing _ = nothing
@@ -62,7 +61,7 @@ module Main where
       then? (just r1) op2 = op2 r1
 
       digitsToℕ : List ℕ → ℕ
-      digitsToℕ xs = digitsToℕ' (Data.List.reverse xs)
+      digitsToℕ xs = digitsToℕ' (List.reverse xs)
         where
           digitsToℕ' : List ℕ → ℕ
           digitsToℕ' []       = 0
@@ -85,27 +84,18 @@ module Main where
   notSpaceChar ' ' = false
   notSpaceChar _ = true
 
-  -- source: https://stackoverflow.com/questions/11763639/agda-parse-a-string-with-numbers
-  splitBy : ∀ {a} {A : Set a} → (A → Bool) → List A → List (List A)
-  splitBy {A = A} p = uncurry′ _∷_ ∘ foldr step ([] , [])
-    where
-      step : A → List A × List (List A) → List A × List (List A)
-      step x (cur , acc) with p x
-      ... | true  = x ∷ cur , acc
-      ... | false = [] , cur ∷ acc
-
   segregate : String → List String
-  segregate string = Data.List.map fromList (splitBy notSpaceChar (toList string))
+  segregate string = List.map fromList (splitBy notSpaceChar (toList string))
 
   ℤ? : Maybe ℤ → ℤ
   ℤ? (just x) = x
   ℤ? nothing  = ℤ.+ 0
 
   parseNumbers : String → List ℤ
-  parseNumbers s = Data.List.map ℤ?(Data.List.map parseInt (segregate s))
+  parseNumbers s = List.map ℤ?(List.map parseInt (segregate s))
 
   calculate : List ℤ → ℤ
-  calculate zs = foldl _ℤplus_ (ℤ.+ 0) zs
+  calculate zs = List.foldl _ℤplus_ (ℤ.+ 0) zs
 
   main : IO Unit
   main =
