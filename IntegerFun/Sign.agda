@@ -1,6 +1,6 @@
 module IntegerFun.Sign where
 
-  open import IntegerFun.String
+  open import Data.String using (String)
 
   data Sign : Set where
     positive : Sign

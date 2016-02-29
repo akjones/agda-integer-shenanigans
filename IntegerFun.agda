@@ -1,6 +1,6 @@
 module IntegerFun where
 
-  open import IntegerFun.String
+  open import Data.String using (String; _++_)
   open import IntegerFun.Sign renaming (show to Signshow)
   open import IntegerFun.Natural as ℕ
     using (ℕ) renaming (_plus_ to _ℕplus_; _minus_ to _ℕminus_; show to ℕshow)
