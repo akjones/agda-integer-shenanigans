@@ -19,19 +19,21 @@ module Main where
   open import IntegerFun as ℤ
     using (ℤ) renaming (_plus_ to _ℤplus_)
 
+  open import IntegerFun.Sign
+
   postulate
     getLine : IO String
 
   {-# COMPILED getLine getLine #-}
 
   -- source: http://dafoster.net/articles/2014/02/17/agda-second-impressions/
-  parseInt : String → Maybe ℕ
-  parseInt s =
+  parseNat : List Char → Maybe ℕ
+  parseNat s =
     then? (unwrap (parseDigits s)) (λ s' →
       just (digitsToℕ s'))
     where
-      parseDigits : String → List (Maybe ℕ)
-      parseDigits s = Data.List.map toDigit (Data.String.toList s)
+      parseDigits : List Char → List (Maybe ℕ)
+      parseDigits s = Data.List.map toDigit s
         where
           toDigit : Char → Maybe ℕ
           toDigit '0' = just 0
@@ -70,11 +72,20 @@ module Main where
   ℕ? (just x) = x
   ℕ? nothing  = 0
 
+  parseInt : String → Maybe ℤ
+  parseInt i = sign (toList i)
+    where
+      sign : List Char → Maybe ℤ
+      sign [] = nothing
+      sign ('+' ∷ chars) = just (ℤ.+ ℕ?(parseNat(chars)))
+      sign ('-' ∷ chars) = just (ℤ.- ℕ?(parseNat(chars)))
+      sign chars = just (ℤ.+ ℕ?(parseNat(chars)))
+
   notSpaceChar : Char → Bool
   notSpaceChar ' ' = false
   notSpaceChar _ = true
 
--- source: https://stackoverflow.com/questions/11763639/agda-parse-a-string-with-numbers
+  -- source: https://stackoverflow.com/questions/11763639/agda-parse-a-string-with-numbers
   splitBy : ∀ {a} {A : Set a} → (A → Bool) → List A → List (List A)
   splitBy {A = A} p = uncurry′ _∷_ ∘ foldr step ([] , [])
     where
@@ -86,11 +97,18 @@ module Main where
   segregate : String → List String
   segregate string = Data.List.map fromList (splitBy notSpaceChar (toList string))
 
-  parseNumbers : String → List (Maybe ℕ)
-  parseNumbers s = Data.List.map parseInt (segregate s)
+  ℤ? : Maybe ℤ → ℤ
+  ℤ? (just x) = x
+  ℤ? nothing  = ℤ.+ 0
+
+  parseNumbers : String → List ℤ
+  parseNumbers s = Data.List.map ℤ?(Data.List.map parseInt (segregate s))
+
+  calculate : List ℤ → ℤ
+  calculate zs = foldl _ℤplus_ (ℤ.+ 0) zs
 
   main : IO Unit
   main =
     getLine >>= (λ s →
-      return (Data.Nat.Show.show (ℕ? (parseInt s))) >>= (λ s' →
+      return (ℤ.show(calculate(parseNumbers s))) >>= (λ s' →
         putStrLn (toCostring s')))
