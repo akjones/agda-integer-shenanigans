@@ -6,18 +6,15 @@ module Main where
   open import Data.Bool
   open import Data.Char
   open import Data.Maybe
-  open import Data.Nat
-  open import Data.Nat.Show
   open import Data.String
   open import Foreign.Haskell using (Unit)
   open import IO.Primitive
   open import Data.Bool.Base using (not)
 
   open import IntegerFun.List as List
-
+  open import IntegerFun.Natural as ℕ
   open import IntegerFun as ℤ
     using (ℤ) renaming (_plus_ to _ℤplus_)
-
   open import IntegerFun.Sign
 
   postulate
