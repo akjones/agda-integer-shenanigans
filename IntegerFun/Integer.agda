@@ -1,9 +1,12 @@
-module IntegerFun where
+module IntegerFun.Integer where
 
-  open import Data.String using (String; _++_)
+  open import Data.String using (String; _++_; toList)
   open import IntegerFun.Sign renaming (show to Signshow)
   open import IntegerFun.Natural as ℕ
-    using (ℕ) renaming (_plus_ to _ℕplus_; _minus_ to _ℕminus_; show to ℕshow)
+    using (ℕ; parseNat) renaming (_plus_ to _ℕplus_; _minus_ to _ℕminus_; show to ℕshow)
+  open import IntegerFun.List as List using (List; _∷_; [])
+  open import Data.Maybe
+  open import Data.Char using (Char)
 
   data ℤ : Set where
     -[1+_] : (n : ℕ) → ℤ
@@ -34,3 +37,16 @@ module IntegerFun where
 
   show : ℤ → String
   show i = Signshow (sign i) ++ ℕshow ∣ i ∣
+
+  parseInt : String → Maybe ℤ
+  parseInt i = parseDigits (toList i)
+    where
+      ℕ? : Maybe ℕ → ℕ
+      ℕ? (just x) = x
+      ℕ? nothing  = 0
+
+      parseDigits : List Char → Maybe ℤ
+      parseDigits [] = nothing
+      parseDigits ('+' ∷ chars) = just (+ ℕ?(parseNat(chars)))
+      parseDigits ('-' ∷ chars) = just (- ℕ?(parseNat(chars)))
+      parseDigits chars = just (ℤ.+ ℕ?(parseNat(chars)))
