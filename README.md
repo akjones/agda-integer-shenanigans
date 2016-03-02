@@ -1,4 +1,5 @@
-* Agda integer addition shenanigans
+Agda integer addition shenanigans
+=================================
 
 My first experiment with [Agda](http://wiki.portal.chalmers.se/agda/pmwiki.php), a dependently typed functional programming language. I attempted to solve this problem:
 
